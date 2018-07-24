@@ -1,0 +1,32 @@
+{
+  "name": "express-helpers",
+  "version": "0.0.1",
+  "description": "Helper classes for express",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/public-tech/express-helpers.git"
+  },
+  "keywords": [
+    "express",
+    "async",
+    "await",
+    "helper",
+    "routes"
+  ],
+  "author": "Andy Richardson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/public-tech/express-helpers/issues"
+  },
+  "homepage": "https://github.com/public-tech/express-helpers#readme",
+  "dependencies": {
+    "debug": "^3.1.0"
+  }
+}
