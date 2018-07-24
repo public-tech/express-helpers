@@ -2,13 +2,13 @@
 
 Utilities to help with using express on node.
 
-This library only has a single runtime dependency on `debug` for debugging statements.
+This library only has a single runtime dependency on `debug` for debugging statements (`DEBUG=Routes`).
 
 ## Compatibility
 
-Requires `node 8+`.
+- Requires `node 8+`
 
-Requires `express 4+`.
+- Requires `express 4+`
 
 ## Usage
 
@@ -50,6 +50,7 @@ should place all your services in the same directory.
 
 Given an app structure of:
 
+<pre>
 app
 |
 |---services
@@ -58,6 +59,7 @@ app
 |       RecordService.js
 |
 server.js
+</pre>
 
 in `server.js`, when you initialise `express`, you can then register all the routes for all the services in the 
 `services` directory.
