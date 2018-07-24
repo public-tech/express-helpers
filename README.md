@@ -79,26 +79,47 @@ in `server.js`, when you initialise `express`, you can then register all the rou
 This will register every `get` route for every service with the express app.
 You need to pass the absolute path to the `services` directory to the `Routes`.
 The `pathPrefix` is optional and will append the prefix to every route, e.g. `/my-app/user/:email`.
-Note that you don't need to `require` in any services into the `server.js` file.
 
+## Rationale
 
-### expressUtil
+This module attempts to add the following abilities to your code:
+
+- you don't need to `require` in any services into the `server.js` file. This means you only have to add service classes to your `services` directory and they will be picked up automatically and have their routes registered.
+
+- you don't need to remember to add routes to express - you just add them to the `routes` object.
+
+- keeping your routes co-located with the service code that will be called from the route handler, keeps all your related code in one place
+
+- calling express middleware in async/await syntax can be seen as cleaner
+
+## expressUtil
 
 This module exposes some small helper functions.
 
-`writeResponse`
+- `writeResponse`
 
 This function wrapes sending an express response and sets the statusCode if the handler errorred.
 
-`logErrors`
+- `logErrors`
 
 This function is a small express middleware to log errors to `stderr`.
 
-`sendErrorToClient`
+- `sendErrorToClient`
 
 This functio is a small express middleware to not sanitise any error before sending to the client.
 
-`awaitHandlerFactory`
+You can use these function like so:
+
+```javascript
+  app.use(expressUtil.logErrors);
+  app.use(expressUtil.sendErrorToClient);
+  // ... add other stuff to express
+  app.listen(port, hostname);
+```
+
+This will ensure that all errors are logged on the server but none are leaked to the client.
+
+- `awaitHandlerFactory`
 
 This function allows you to call express routes using async/await syntax, e.g.
 

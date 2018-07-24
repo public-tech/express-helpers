@@ -8,8 +8,9 @@ class Routes {
 
     /**
      * Initialise the routes.
-     * @param {app} expressApp and instance of the express app
-     * @param {string} absPath the absolute path of the directory that contains all the services with routes
+     * @param {app}     expressApp and instance of the express app
+     * @param {string}  absPath the absolute path of the directory that contains all the services with routes
+     * @param {string}  pathPrefix [optional] path to prefix to all the routes
      */
         
     constructor(expressApp, absPath, pathPrefix) {
