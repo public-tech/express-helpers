@@ -20,17 +20,19 @@ that will implement the route.
 You specify routes per http verb, e.g. get, post, put, delete..
 
 ```javascript
+const { helpers } = require('express-helpers');
+
 UserService.routes = {
     get: [
       { path: '/user/:email',
-        func: expressUtil.awaitHandlerFactory(async (req, res, next) => {
+        func: helpers.awaitHandlerFactory(async (req, res, next) => {
           // ... your code here
         })
       }
     ],
     post: [
       { path: '/user',
-        func: expressUtil.awaitHandlerFactory(async (req, res, next) => {
+        func: helpers.awaitHandlerFactory(async (req, res, next) => {
           // ... your code here
         })
       }
@@ -92,9 +94,14 @@ This module attempts to add the following abilities to your code:
 
 - calling express middleware in async/await syntax can be seen as cleaner
 
-## expressUtil
+## helpers
 
 This module exposes some small helper functions.
+To use the module:
+
+```javascript
+const { helpers } = require('express-helpers');`
+```
 
 - `writeResponse`
 
@@ -111,8 +118,8 @@ This functio is a small express middleware to not sanitise any error before send
 You can use these function like so:
 
 ```javascript
-  app.use(expressUtil.logErrors);
-  app.use(expressUtil.sendErrorToClient);
+  app.use(helpers.logErrors);
+  app.use(helpers.sendErrorToClient);
   // ... add other stuff to express
   app.listen(port, hostname);
 ```

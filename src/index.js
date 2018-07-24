@@ -4,6 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const debug = require('debug')('Routes');
 
+const helpers = require('./helpers');
+
 class Routes {
 
     /**
@@ -63,4 +65,5 @@ class Routes {
           });
       };
 };
-module.exports = Routes;
+module.exports.Routes = Routes;
+module.exports.helpers = helpers;
