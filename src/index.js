@@ -16,13 +16,23 @@ class Routes {
      */
         
     constructor(expressApp, absPath, pathPrefix) {
-        this.app = expressApp;
-        this.services = [];
-        this.serviceDirAbsPath = absPath;
-        this.pathPrefix = pathPrefix;
-        //work out the relative path (starting with ./) from this file to the dir containing the services
-        this.serviceDirRelPath = `./${path.relative(__dirname, absPath)}`;
-        this._addServices();
+        const pathIsGood = fs.existsSync(absPath);
+        if(pathIsGood){
+            const isDir = fs.statSync(absPath).isDirectory();
+            if(isDir){
+                this.app = expressApp;
+                this.services = [];
+                this.serviceDirAbsPath = absPath;
+                this.pathPrefix = pathPrefix;
+                //work out the relative path (starting with ./) from this file to the dir containing the services
+                this.serviceDirRelPath = `./${path.relative(__dirname, absPath)}`;
+                this._addServices();
+            } else {
+                throw new Error(`Invalid absolute path passed to Routes constructor - it needs to be a directory: ${absPath}`);                
+            }
+        } else {
+            throw new Error(`Invalid absolute path passed to Routes constructor: ${absPath}`);
+        }
     }
 
     addGetRoutes() {
@@ -40,7 +50,7 @@ class Routes {
             if(service.routes.post){
                 service.routes.post.forEach(postRoute => {
                     this.app.get(`${this.pathPrefix}${postRoute.path}`, postRoute.func);
-                });
+                 });
             }
         });
     };
@@ -49,6 +59,20 @@ class Routes {
      * Add all the service classes.
      */
     _addServices(){
+        let valid = true;
+        const serviceRoutesAreValid = service => {
+            service.routes.get.forEach(getRoute => {
+                if(!getRoute.path || !getRoute.func){
+                    throw new Error(`Misconfigured get route. Route path is '${getRoute.path}'`);
+                }
+            });
+            service.routes.post.forEach(postRoute => {
+                if(!postRoute.path || !postRoute.func){
+                    throw new Error(`Misconfigured post route. Route path is '${postRoute.path}'`);
+                }
+            });
+        };
+
         debug('adding routes for services..');
         fs
           .readdirSync(this.serviceDirAbsPath)
@@ -58,10 +82,12 @@ class Routes {
           .forEach(file => {
             const service = require(`${this.serviceDirRelPath}/${file}`);
             const serviceToUse = service.default ? service.default : service;
+
             if(serviceToUse.routes){
+                serviceRoutesAreValid(service);
                 debug(`adding routes for service: ${file}`);
                 this.services.push(serviceToUse);
-            };
+            }
           });
       };
 };

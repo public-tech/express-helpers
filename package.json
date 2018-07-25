@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "test"
+    "test": "mocha -c --reporter=spec --recursive \"test/**/*.spec.js\""
   },
   "repository": {
     "type": "git",
@@ -28,5 +28,9 @@
   "homepage": "https://github.com/public-tech/express-helpers#readme",
   "dependencies": {
     "debug": "^3.1.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0"
   }
 }
