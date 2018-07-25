@@ -6,6 +6,9 @@
   "directories": {
     "test": "test"
   },
+  "files": [
+    "src/"
+  ],
   "scripts": {
     "test": "mocha -c --reporter=spec --recursive \"test/**/*.spec.js\""
   },
