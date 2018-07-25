@@ -1,0 +1,1 @@
+This is just a text file - should not be added to the list of services when the directory is parsed.

@@ -1,0 +1,18 @@
+const { helpers } = require('../../../src/index');
+
+BadService = {};
+
+BadService.routes = {
+    get: [
+      //missing path
+      { func: helpers.awaitHandlerFactory(async (req, res, next) => {
+          // ... your code here
+        })
+      }
+    ],
+    post: [
+      { path: '/user' } // missing func
+    ]
+};
+
+module.exports = BadService;
