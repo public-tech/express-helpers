@@ -131,7 +131,7 @@ This will ensure that all errors are logged on the server but none are leaked to
 This function allows you to call express routes using async/await syntax, e.g.
 
 ```javascript
-  expressUtil.awaitHandlerFactory(async (req, res, next) => {
+  helpers.awaitHandlerFactory(async (req, res, next) => {
     // ... route handler code goes here
   });
 ```
