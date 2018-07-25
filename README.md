@@ -43,8 +43,8 @@ UserService.routes = {
 In the above code, you add adding an express route that handle a http get request to `/user/:email` and a route that
 will handle a post request to `/user`.
 
-You will notice that each handler function is the result of calling `expressUtil.awaitHandlerFactory`. This helper
-function (found in the `expressUtil.js` file) wraps a handler function so that you can call it from express middleware
+You will notice that each handler function is the result of calling `helpers.awaitHandlerFactory`. This helper
+function (found in the `helpers` module) wraps a handler function so that you can call it from express middleware
 using async/await syntax;
 
 Once you have added `routes` properties to your services, you can then register all the services with express. You

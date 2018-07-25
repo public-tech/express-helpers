@@ -86,3 +86,23 @@ describe('Routes constructor tests - service loading - bad service', function() 
   });
 
 });
+
+describe('Route addition tests', function() {
+  it('adds get and post routes without error', function(){
+    const app = express();
+    const absPath = path.join(__dirname, './fixtures/mockServices');
+    const prefix = '';
+    const routes = new Routes(app, absPath, prefix);
+
+    function addGetRoutes(){
+      routes.addGetRoutes();
+    }
+    expect(addGetRoutes).to.not.throw();
+
+    function addPostRoutes(){
+      routes.addPostRoutes();
+    }
+    expect(addPostRoutes).to.not.throw();
+
+  });
+});
