@@ -1,5 +1,5 @@
 {
-  "name": "express-helpers",
+  "name": "@public-tech/express-helpers",
   "version": "0.0.1",
   "description": "Helper classes for express",
   "main": "src/index.js",
