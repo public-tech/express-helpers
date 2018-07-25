@@ -113,7 +113,7 @@ This function is a small express middleware to log errors to `stderr`.
 
 - `sendErrorToClient`
 
-This functio is a small express middleware to not sanitise any error before sending to the client.
+This function is a small express middleware to not sanitise any error before sending to the client.
 
 You can use these function like so:
 
