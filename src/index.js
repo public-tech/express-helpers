@@ -75,7 +75,7 @@ class Routes {
             });
         };
 
-        debug('adding routes for services..');
+        debug('parsing routes for services..');
         fs
           .readdirSync(this.serviceDirAbsPath)
           .filter(file => {
