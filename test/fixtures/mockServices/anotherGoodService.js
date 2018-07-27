@@ -4,7 +4,7 @@ AnotherGoodService = {};
 
 AnotherGoodService.routes = {
     get: [
-      { path: '/user/:email',
+      { path: '/service2',
         func: helpers.awaitHandlerFactory(async (req, res, next) => {
           // ... your code here
         })

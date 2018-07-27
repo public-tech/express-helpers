@@ -4,14 +4,14 @@ GoodService = {};
 
 GoodService.routes = {
     get: [
-      { path: '/user/:email',
+      { path: '/service1',
         func: helpers.awaitHandlerFactory(async (req, res, next) => {
           // ... your code here
         })
       }
     ],
     post: [
-      { path: '/user',
+      { path: '/post1',
         func: helpers.awaitHandlerFactory(async (req, res, next) => {
           // ... your code here
         })

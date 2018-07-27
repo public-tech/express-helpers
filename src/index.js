@@ -37,7 +37,7 @@ class Routes {
 
     addGetRoutes() {
         this.services.forEach(service => {
-            if(service.routes.get){
+            if(service.routes.get && service.routes.get.length > 0){
                 debug(`adding get routes for: ${service.filename}`);
                 service.routes.get.forEach(getRoute => {
                     this.app.get(`${this.pathPrefix}${getRoute.path}`, getRoute.func);
@@ -48,10 +48,10 @@ class Routes {
     
     addPostRoutes(){
         this.services.forEach(service => {
-            if(service.routes.post){
+            if(service.routes.post && service.routes.post.length > 0){
                 debug(`adding post routes for: ${service.filename}`);
                 service.routes.post.forEach(postRoute => {
-                    this.app.get(`${this.pathPrefix}${postRoute.path}`, postRoute.func);
+                    this.app.post(`${this.pathPrefix}${postRoute.path}`, postRoute.func);
                  });
             }
         });
