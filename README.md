@@ -25,16 +25,23 @@ const { helpers } = require('express-helpers');
 UserService.routes = {
     get: [
       { path: '/user/:email',
-        func: helpers.awaitHandlerFactory(async (req, res, next) => {
-          // ... your code here
-        })
+        funcs: [
+          someMiddleWare,
+          helpers.awaitHandlerFactory(async (req, res, next) => {
+            // ... your code here
+          }),
+          someOtherMiddleware
+        ]
       }
     ],
     post: [
       { path: '/user',
-        func: helpers.awaitHandlerFactory(async (req, res, next) => {
-          // ... your code here
-        })
+        funcs: [
+          helpers.awaitHandlerFactory(async (req, res, next) => {
+            // ... your code here
+          }),
+          anotherFunction(req, res, next)
+        ]
       }
     ]
 };

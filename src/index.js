@@ -40,7 +40,7 @@ class Routes {
             if(service.routes.get && service.routes.get.length > 0){
                 debug(`adding get routes for: ${service.filename}`);
                 service.routes.get.forEach(getRoute => {
-                    this.app.get(`${this.pathPrefix}${getRoute.path}`, getRoute.func);
+                    this.app.get(`${this.pathPrefix}${getRoute.path}`, ...getRoute.funcs);
                 });
             }
         });
@@ -51,7 +51,7 @@ class Routes {
             if(service.routes.post && service.routes.post.length > 0){
                 debug(`adding post routes for: ${service.filename}`);
                 service.routes.post.forEach(postRoute => {
-                    this.app.post(`${this.pathPrefix}${postRoute.path}`, postRoute.func);
+                    this.app.post(`${this.pathPrefix}${postRoute.path}`, ...postRoute.funcs);
                  });
             }
         });
@@ -65,14 +65,14 @@ class Routes {
         const serviceRoutesAreValid = service => {
             if(service.routes.get){
                 service.routes.get.forEach(getRoute => {
-                    if(!getRoute.path || !getRoute.func){
+                    if(!getRoute.path || !getRoute.funcs){
                         throw new Error(`Misconfigured get route. Route path is '${getRoute.path}'`);
                     }
                 });
             }
             if(service.routes.post){
                 service.routes.post.forEach(postRoute => {
-                    if(!postRoute.path || !postRoute.func){
+                    if(!postRoute.path || !postRoute.funcs){
                         throw new Error(`Misconfigured post route. Route path is '${postRoute.path}'`);
                     }
                 });

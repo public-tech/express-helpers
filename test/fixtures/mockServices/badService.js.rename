@@ -5,9 +5,11 @@ BadService = {};
 BadService.routes = {
     get: [
       //missing path
-      { func: helpers.awaitHandlerFactory(async (req, res, next) => {
-          // ... your code here
-        })
+      { funcs: [
+        helpers.awaitHandlerFactory(async (req, res, next) => {
+            // ... your code here
+          })
+      ]
       }
     ],
     post: [
