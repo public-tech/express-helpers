@@ -6,8 +6,9 @@ const debug = require('debug')('Routes');
 
 const helpers = require('./helpers');
 
-class Routes {
+const verbs = ['get', 'post', 'delete', 'put'];
 
+class Routes {
     /**
      * Initialise the routes.
      * @param {app}     expressApp and instance of the express app
@@ -35,7 +36,20 @@ class Routes {
         }
     }
 
+    _addVerb(verb){
+        this.services.forEach(service => {
+            if(service.routes[verb] && service.routes[verb].length > 0){
+                debug(`adding ${verb} routes for: ${service.filename}`);
+                service.routes[verb].forEach(route => {
+                    this.app[verb](`${this.pathPrefix}${route.path}`, ...route.funcs);
+                });
+            }
+        });
+    };
+
     addGetRoutes() {
+        this._addVerb('get');
+        /*
         this.services.forEach(service => {
             if(service.routes.get && service.routes.get.length > 0){
                 debug(`adding get routes for: ${service.filename}`);
@@ -44,9 +58,12 @@ class Routes {
                 });
             }
         });
+        */
     };
     
     addPostRoutes(){
+        this._addVerb('post');
+        /*
         this.services.forEach(service => {
             if(service.routes.post && service.routes.post.length > 0){
                 debug(`adding post routes for: ${service.filename}`);
@@ -55,28 +72,33 @@ class Routes {
                  });
             }
         });
+        */
+    };
+
+    addDeleteRoutes(){
+        this._addVerb('delete');
+    };
+
+    addPutRoutes(){
+        this._addVerb('put');
     };
 
     /**
      * Add all the service classes.
      */
     _addServices(){
-        let valid = true;
         const serviceRoutesAreValid = service => {
-            if(service.routes.get){
-                service.routes.get.forEach(getRoute => {
-                    if(!getRoute.path || !getRoute.funcs){
-                        throw new Error(`Misconfigured get route. Route path is '${getRoute.path}'`);
-                    }
-                });
+            const validate = function(verb){
+                if(service.routes[verb]){
+                    service.routes[verb].forEach(route => {
+                        if(!route.path || !route.funcs){
+                            throw new Error(`Misconfigured ${verb} route. Route path is '${route.path}'`);
+                        }
+                    });
+                }
             }
-            if(service.routes.post){
-                service.routes.post.forEach(postRoute => {
-                    if(!postRoute.path || !postRoute.funcs){
-                        throw new Error(`Misconfigured post route. Route path is '${postRoute.path}'`);
-                    }
-                });
-            }
+            verbs.forEach(validate);
+            return true;
         };
 
         debug('parsing routes for services..');
