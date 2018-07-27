@@ -63,16 +63,20 @@ class Routes {
     _addServices(){
         let valid = true;
         const serviceRoutesAreValid = service => {
-            service.routes.get.forEach(getRoute => {
-                if(!getRoute.path || !getRoute.func){
-                    throw new Error(`Misconfigured get route. Route path is '${getRoute.path}'`);
-                }
-            });
-            service.routes.post.forEach(postRoute => {
-                if(!postRoute.path || !postRoute.func){
-                    throw new Error(`Misconfigured post route. Route path is '${postRoute.path}'`);
-                }
-            });
+            if(service.routes.get){
+                service.routes.get.forEach(getRoute => {
+                    if(!getRoute.path || !getRoute.func){
+                        throw new Error(`Misconfigured get route. Route path is '${getRoute.path}'`);
+                    }
+                });
+            }
+            if(service.routes.post){
+                service.routes.post.forEach(postRoute => {
+                    if(!postRoute.path || !postRoute.func){
+                        throw new Error(`Misconfigured post route. Route path is '${postRoute.path}'`);
+                    }
+                });
+            }
         };
 
         debug('parsing routes for services..');

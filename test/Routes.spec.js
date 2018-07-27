@@ -43,11 +43,17 @@ describe('Routes constructor tests - service loading', function() {
   });
 
   it('ignores non .js files when loading all services in a directory', function() {
-    expect(routes.services.length).to.equal(1); //good and bad services
+    expect(routes.services.length).to.equal(2); //good and bad services
   });
 
   it('loads all the good services and routes', function() {
-    const goodService = routes.services[0];
+    const anotherGoodService = routes.services[0];
+    expect(anotherGoodService.filename).to.equal('anotherGoodService.js');
+    expect(anotherGoodService.routes.get.length).to.equal(1);
+    expect(anotherGoodService.routes.post).to.be.undefined;
+
+    const goodService = routes.services[1];
+    expect(goodService.filename).to.equal('goodService.js');
     expect(goodService.routes.get.length).to.equal(1);
     expect(goodService.routes.post.length).to.equal(1);
   });
