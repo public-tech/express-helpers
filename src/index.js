@@ -15,7 +15,6 @@ class Routes {
      * @param {string}  absPath the absolute path of the directory that contains all the services with routes
      * @param {string}  pathPrefix [optional] path to prefix to all the routes
      */
-        
     constructor(expressApp, absPath, pathPrefix) {
         const pathIsGood = fs.existsSync(absPath);
         if(pathIsGood){
@@ -35,53 +34,6 @@ class Routes {
             throw new Error(`Invalid absolute path passed to Routes constructor: ${absPath}`);
         }
     }
-
-    _addVerb(verb){
-        this.services.forEach(service => {
-            if(service.routes[verb] && service.routes[verb].length > 0){
-                debug(`adding ${verb} routes for: ${service.filename}`);
-                service.routes[verb].forEach(route => {
-                    this.app[verb](`${this.pathPrefix}${route.path}`, ...route.funcs);
-                });
-            }
-        });
-    };
-
-    addGetRoutes() {
-        this._addVerb('get');
-        /*
-        this.services.forEach(service => {
-            if(service.routes.get && service.routes.get.length > 0){
-                debug(`adding get routes for: ${service.filename}`);
-                service.routes.get.forEach(getRoute => {
-                    this.app.get(`${this.pathPrefix}${getRoute.path}`, ...getRoute.funcs);
-                });
-            }
-        });
-        */
-    };
-    
-    addPostRoutes(){
-        this._addVerb('post');
-        /*
-        this.services.forEach(service => {
-            if(service.routes.post && service.routes.post.length > 0){
-                debug(`adding post routes for: ${service.filename}`);
-                service.routes.post.forEach(postRoute => {
-                    this.app.post(`${this.pathPrefix}${postRoute.path}`, ...postRoute.funcs);
-                 });
-            }
-        });
-        */
-    };
-
-    addDeleteRoutes(){
-        this._addVerb('delete');
-    };
-
-    addPutRoutes(){
-        this._addVerb('put');
-    };
 
     /**
      * Add all the service classes.
@@ -118,6 +70,74 @@ class Routes {
             }
           });
       };
+
+    /**
+     * Add all the routes for a particular HTTP verb
+     * @param {String} verb 
+     */
+    _addVerb(verb){
+        this.services.forEach(service => {
+            if(service.routes[verb] && service.routes[verb].length > 0){
+                debug(`adding ${verb} routes for: ${service.filename}`);
+                service.routes[verb].forEach(route => {
+                    this.app[verb](`${this.pathPrefix}${route.path}`, ...route.funcs);
+                });
+            }
+        });
+    };
+
+    /**
+     * Add all the HTTP GET routes to the express app.
+     */
+    addGetRoutes() {
+        this._addVerb('get');
+    };
+    
+    /**
+     * Add all the HTTP POST routes to the express app.
+     */
+    addPostRoutes(){
+        this._addVerb('post');
+    };
+
+    /**
+     * Add all the HTTP DELETE routes to the express app.
+     */
+    addDeleteRoutes(){
+        this._addVerb('delete');
+    };
+
+    /**
+     * Add all the HTTP PUT routes to the express app.
+     */
+    addPutRoutes(){
+        this._addVerb('put');
+    };
+
+    /**
+     * Add all the routes for all the HTTP verbs to the express app.
+     */
+    addAllRoutes() {
+        verbs.forEach(verb => {
+            const func = `add${verb.charAt(0).toUpperCase() + verb.slice(1)}Routes`;
+            this[func]();
+        });
+    };
+
+    /**
+     * Add 404 handlers for each HTTP verb to the express app.
+     * This is useful if you have an API server and want to return a standard response for all 404s.
+     */
+    add404Handlers() {
+        verbs.forEach(verb => {
+            this.app[verb]('/*', helpers.awaitHandlerFactory(async (req, res, next) => {
+                debug(`unknown ${verb} route: ${req.path}`);
+                res.status(404);
+                res.json({'unknownRoute': true});
+            }));
+        });
+    };
 };
+
 module.exports.Routes = Routes;
 module.exports.helpers = helpers;

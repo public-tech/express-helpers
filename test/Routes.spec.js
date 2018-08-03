@@ -118,4 +118,21 @@ describe('Routes route addition tests', function() {
     expect(addPostRoutes).to.not.throw();
     expect(app._router.stack.length).to.equal(5);  //there are 2 default express routes and our 2 get routes and 1 post
   });
+
+  it('adds all routes without error', function(){
+    function addAllRoutes(){
+      routes.addAllRoutes();
+    }
+    expect(addAllRoutes).to.not.throw();
+    expect(app._router.stack.length).to.equal(9); //express allows duplicate handlers
+  });
+
+  it('adds 404 wildcard handlers without error', function(){
+
+    function add404Handlers(){
+      routes.add404Handlers();
+    }
+    expect(add404Handlers).to.not.throw();
+    expect(app._router.stack.length).to.equal(13);  //there are 4 verbs so we should add 4 handlers
+  });
 });
