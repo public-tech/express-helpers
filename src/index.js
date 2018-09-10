@@ -104,7 +104,7 @@ class Routes {
             if(routes[verb] && routes[verb].length > 0){
                 debug(`adding ${verb} routes.`);
                 routes[verb].forEach(route => {
-                    this.app[verb](`${this.pathPrefix}${route.path}`, ...route.funcs);
+                    this.app[verb](`${this.pathPrefix || ''}${route.path}`, ...route.funcs);
                 });
             }
         }
