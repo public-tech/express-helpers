@@ -10,7 +10,7 @@ const { Routes } = require('../src/index');
 describe('Routes constructor tests', function() {
   it('throws an error if path to services is not a valid path', function() {
     const app = express();
-    const absPath = '';
+    const absPath = path.join(__dirname, 'nonsense');
     const prefix = '';
     
     function runConstructor(){
@@ -127,12 +127,64 @@ describe('Routes route addition tests', function() {
     expect(app._router.stack.length).to.equal(9); //express allows duplicate handlers
   });
 
-  it('adds 404 wildcard handlers without error', function(){
+  it('adds 400 wildcard handlers without error', function(){
 
-    function add404Handlers(){
-      routes.add404Handlers();
+    function add400Handlers(){
+      routes.add400Handlers();
     }
-    expect(add404Handlers).to.not.throw();
+    expect(add400Handlers).to.not.throw();
     expect(app._router.stack.length).to.equal(13);  //there are 4 verbs so we should add 4 handlers
   });
+
+  describe('Direct route addition', function() {
+    let app;
+    before(function(){
+      app = express();
+      routes = new Routes(app);
+    });
+  
+    it('adds routes directly without error', function(){
+      const testRoutes = {
+        get: [
+          { path: '/test', //fetch an existing user by email: /user/some.person@company.com?full-details=true
+            funcs: [function(){}]
+          }
+        ],
+        post: [
+          { path: '/test', //fetch an existing user by email: /user/some.person@company.com?full-details=true
+            funcs: [function(){}]
+          }
+        ],
+        put: [
+          { path: '/test', //fetch an existing user by email: /user/some.person@company.com?full-details=true
+            funcs: [function(){}]
+          }
+        ]
+      };
+      expect(routes.addRawRoutes(testRoutes)).to.not.throw;
+      expect(app._router.stack.length).to.equal(5); //including the 2 default express routes
+    });
+  });
+
+  describe('400 handlers', function() {
+    let app, routes;
+    before(function(){
+      app = express();
+      routes = new Routes(app);
+      routes.add400Handlers();
+    });
+  
+    it('adds should return 400 for an invalid  GET route', function(){
+      //call express with /nonsense
+    });
+    it('adds should return 400 for an invalid  POST route', function(){
+      //call express with /nonsense
+    });
+    it('adds should return 400 for an invalid  PUT route', function(){
+      //call express with /nonsense
+    });
+    it('adds should return 400 for an invalid  DELETE route', function(){
+      //call express with /nonsense
+    });
+  });  
 });

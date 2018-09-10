@@ -24,22 +24,20 @@ This module attempts to add the following abilities to your code:
 
 ## Usage
 
-`Routes` is a class that will load all your services (if they expose a `routes` property) and register the routes with
-express.
+`Routes` is a class that will load all your routes and register the routes with express.
 
-Given a class `UserService`, you need to add the routes that this service will accept, and give the handler function
-that will implement the route.
+Given a class `UserRoutes`, you need to expose a `routes` property. You need to add the routes and give the handler function that will implement the route.
 You specify routes per http verb, e.g. get, post, put, delete..
 
 ```javascript
-//UserService.js
+//UserRoutes.js
 
 const { helpers } = require('express-helpers');
 
-UserService = {};
+UserRoutes = {};
 
 //`routes` needs to be accessible on the module
-UserService.routes = {
+UserRoutes.routes = {
     get: [
       { path: '/user/:email',
         funcs: [
@@ -62,7 +60,7 @@ UserService.routes = {
     ]
 };
 
-module.exports = UserService;
+module.exports = UserRoutes;
 ```
 
 In the above code, you add adding an express route that handle a `HTTP GET` request to `/user/:email` and a route that
@@ -74,24 +72,23 @@ Currently, `GET, POST, PUT and DELETE` are the supported verbs.
 You will notice that each handler function is the result of calling `helpers.awaitHandlerFactory`. This helper
 function (found in the `helpers` module) wraps a handler function so that you can use `async/await` syntax in your handler function. This is optional.
 
-Once you have added `routes` properties to your services, you can then register all the services with express. You
-should place all your services in the same directory.
+Once you have added `routes` properties, you can then register all the routes with express. You should place all your routes in the same directory.
+Keeping your routes separate from your services will allow for easy unit and integration testing.
 
 Given an app structure of:
 
 <pre>
 app
 |
-|---services
+|---routes
 |       |
-|       UserService.js
-|       RecordService.js
+|       UserRoutes.js
+|       RecordRoutes.js
 |
 server.js
 </pre>
 
-in `server.js`, when you initialise `express`, you can then register all the routes for all the services in the 
-`services` directory.
+in `server.js`, when you initialise `express`, you can then register all the routes for all the routes in the `routes` directory:
 
 ```javascript
   const express = require('express');
@@ -99,17 +96,52 @@ in `server.js`, when you initialise `express`, you can then register all the rou
 
   const app = express();
   const pathPrefix = '/my-app';
-  const routes = new Routes(app, path.join(__dirname, './service'), pathPrefix);
+  const routes = new Routes(app, path.join(__dirname, './routes'), pathPrefix);
 
-  //add just the get routes to app
-  routes.addGetRoutes();
-  //or add all routes to app
-  //routes.addAllRoutes();
+  //add all handlers to the express app
+  routes.addAllRoutes();
+  //or add routes by verb, e.g. add all post routes using routes.addPostRoutes(), or add all delete routes..
 ```
 
-This will register every `get` route for every service with the express app.
-You need to pass the absolute path to the `services` directory to the `Routes`.
-The `pathPrefix` is optional and will append the prefix to every route, e.g. `/my-app/user/:email`.
+This will register every Route module that exposes a `routes` property that is found in the `routes` directory.
+In addition, this will then register every `get` route for every registered module with the express app.
+You need to pass the absolute path to the `routes` directory to the `Routes`.
+The `pathPrefix` is optional and will append the prefix to every route, e.g. a prefix of `my-app` will mean that the path to handlers looks like: `/my-app/user/:email`.
+
+Alternativly, you can directly register a `routes` object with the express app:
+
+```javascript
+  const express = require('express');
+  const { Routes } = require('express-helpers');
+
+  const app = express();
+  const routes = new Routes(app); //don't register any Routes objects from a directory
+  const someRouteObj = { 
+    get: [
+      {path:'/somepath', funcs: [someFunc]}
+    ]
+  };
+
+  routes.addRawRoutes(someRouteObj);
+```
+
+This is useful when unit/integration testing your app and you just want to test a route without creating a dummy `Routes` module.
+
+- `add400Handlers()`
+
+This will add 400 handlers for any route that is not already handled.
+
+```javascript
+  const express = require('express');
+  const { Routes } = require('express-helpers');
+
+  const app = express();
+  const pathPrefix = '/my-app';
+  const routes = new Routes(app, path.join(__dirname, './routes'), pathPrefix);
+
+  routes.addAllRoutes();
+  routes.add400Handlers(); //anything not handled by the registered handlers will end up here.
+```
 
 ## helpers
 
@@ -130,7 +162,7 @@ This function is a small express middleware to log errors to `stderr`.
 
 - `sendErrorToClient`
 
-This function is a small express middleware to not sanitise any error before sending to the client.
+This function is a small express middleware to sanitise any error before sending to the client.
 
 You can use these function like so:
 
@@ -142,6 +174,24 @@ You can use these function like so:
 ```
 
 This will ensure that all errors are logged on the server but none are leaked to the client.
+With the `logErrors` and `sendErrorToClient` middlewares enabled, your route handling code just needs to call `next` on an error:
+
+```javascript
+  helpers.awaitHandlerFactory(async (req, res, next) => {
+    try {
+      const result = await someAsyncProcess();
+      if(result.success){
+        //do awesome things
+      }
+    } catch(err){
+      next(err);  //will log the error on the server (console) and then call `sendErrorToClient` with the error;
+    }
+  });  
+```
+
+- `sendInvalidApiCall`
+
+This function is a small express middleware that will send a 400 error to the caller;
 
 - `awaitHandlerFactory`
 
