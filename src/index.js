@@ -157,8 +157,10 @@ class Routes {
     add400Handlers() {
         verbs.forEach(verb => {
             this.app[verb]('/*', helpers.awaitHandlerFactory(async (req, res, next) => {
-                debug(`unknown ${verb} route: ${req.path}`);
-                helpers.sendInvalidApiCall();
+                const errText = `unknown ${verb} route: ${req.path}`;
+                debug(errText);
+                const err = new Error(errText);
+                helpers.sendInvalidApiCall(err, req, res, next);
             }));
         });
     };
