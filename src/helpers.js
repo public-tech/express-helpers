@@ -1,5 +1,7 @@
 'use strict';
 
+const debug = require('debug')('express-helper: ');
+
 /* eslint no-unused-vars: off */
 const writeResponse = function(req, res, status, data, err) {
   res.statusCode = status;
@@ -42,6 +44,7 @@ const sendInvalidApiCall = function(err, req, res, next) {
 
 const awaitHandlerFactory = (middleware) => {
   return async (req, res, next) => {
+    debug(`HIT: ${req.method} ${req.path}`);
     await middleware(req, res, next).catch((err) => {
       next(err);
     });
