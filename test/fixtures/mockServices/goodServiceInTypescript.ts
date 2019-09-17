@@ -1,4 +1,4 @@
-const { helpers } = require('../../../src/index');
+import { helpers } from '../../../src/index';
 
 export const routes = {
   get: [
