@@ -43,7 +43,7 @@ describe('Routes parsing tests', function() {
   });
 
   it('ignores non .js files when loading all services in a directory', function() {
-    expect(routes.services.length).to.equal(2); //good and bad services
+    expect(routes.services.length).to.equal(3); //good and bad services and typescript
   });
 
   it('parses all the good services and routes', function() {
@@ -56,6 +56,11 @@ describe('Routes parsing tests', function() {
     expect(goodService.filename).to.equal('goodService.js');
     expect(goodService.routes.get.length).to.equal(1);
     expect(goodService.routes.post.length).to.equal(1);
+
+    const tsService = routes.services[2];
+    expect(tsService.filename).to.equal('goodServiceInTypescript.ts');
+    expect(tsService.routes.get.length).to.equal(1);
+    expect(tsService.routes.post.length).to.equal(1);
   });
 });
 
