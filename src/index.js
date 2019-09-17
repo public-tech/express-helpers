@@ -60,7 +60,7 @@ class Routes {
     debug('parsing routes for services..');
     fs.readdirSync(this.serviceDirAbsPath)
       .filter((file) => {
-        return file.indexOf('.') !== 0 && file.slice(-3) === '.js';
+        return file.indexOf('.') !== 0 && ['.js', '.ts'].includes(file.slice(-3));
       })
       .forEach((file) => {
         const service = require(`${this.serviceDirRelPath}/${file}`);

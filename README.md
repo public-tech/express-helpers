@@ -91,16 +91,16 @@ server.js
 in `server.js`, when you initialise `express`, you can then register all the routes for all the routes in the `routes` directory:
 
 ```javascript
-  const express = require('express');
-  const { Routes } = require('express-helpers');
+const express = require('express');
+const { Routes } = require('express-helpers');
 
-  const app = express();
-  const pathPrefix = '/my-app';
-  const routes = new Routes(app, path.join(__dirname, './routes'), pathPrefix);
+const app = express();
+const pathPrefix = '/my-app';
+const routes = new Routes(app, path.join(__dirname, './routes'), pathPrefix);
 
-  //add all handlers to the express app
-  routes.addAllRoutes();
-  //or add routes by verb, e.g. add all post routes using routes.addPostRoutes(), or add all delete routes..
+//add all handlers to the express app
+routes.addAllRoutes();
+//or add routes by verb, e.g. add all post routes using routes.addPostRoutes(), or add all delete routes..
 ```
 
 This will register every Route module that exposes a `routes` property that is found in the `routes` directory.
@@ -111,18 +111,16 @@ The `pathPrefix` is optional and will append the prefix to every route, e.g. a p
 Alternativly, you can directly register a `routes` object with the express app:
 
 ```javascript
-  const express = require('express');
-  const { Routes } = require('express-helpers');
+const express = require('express');
+const { Routes } = require('express-helpers');
 
-  const app = express();
-  const routes = new Routes(app); //don't register any Routes objects from a directory
-  const someRouteObj = { 
-    get: [
-      {path:'/somepath', funcs: [someFunc]}
-    ]
-  };
+const app = express();
+const routes = new Routes(app); //don't register any Routes objects from a directory
+const someRouteObj = {
+  get: [{ path: '/somepath', funcs: [someFunc] }]
+};
 
-  routes.addRawRoutes(someRouteObj);
+routes.addRawRoutes(someRouteObj);
 ```
 
 This is useful when unit/integration testing your app and you just want to test a route without creating a dummy `Routes` module.
@@ -132,15 +130,48 @@ This is useful when unit/integration testing your app and you just want to test 
 This will add 400 handlers for any route that is not already handled.
 
 ```javascript
-  const express = require('express');
-  const { Routes } = require('express-helpers');
+const express = require('express');
+const { Routes } = require('express-helpers');
 
-  const app = express();
-  const pathPrefix = '/my-app';
-  const routes = new Routes(app, path.join(__dirname, './routes'), pathPrefix);
+const app = express();
+const pathPrefix = '/my-app';
+const routes = new Routes(app, path.join(__dirname, './routes'), pathPrefix);
 
-  routes.addAllRoutes();
-  routes.add400Handlers(); //anything not handled by the registered handlers will end up here.
+routes.addAllRoutes();
+routes.add400Handlers(); //anything not handled by the registered handlers will end up here.
+```
+
+### Typescript routes
+
+Routes in typescript are also supported, with the following syntax in the routes file:
+
+```typescript
+import { helpers } from 'express-helpers';
+
+export const routes = {
+  get: [
+    {
+      path: '/typescript-get',
+      funcs: [
+        /* eslint no-unused-vars: off */
+        helpers.awaitHandlerFactory(async (req, res, next) => {
+          // ... your code here
+        })
+      ]
+    }
+  ],
+  post: [
+    {
+      path: '/typescript-post',
+      funcs: [
+        /* eslint no-unused-vars: off */
+        helpers.awaitHandlerFactory(async (req, res, next) => {
+          // ... your code here
+        })
+      ]
+    }
+  ]
+};
 ```
 
 ## helpers
@@ -167,26 +198,26 @@ This function is a small express middleware to sanitise any error before sending
 You can use these function like so:
 
 ```javascript
-  app.use(helpers.logErrors);
-  app.use(helpers.sendErrorToClient);
-  // ... add other stuff to express
-  app.listen(port, hostname);
+app.use(helpers.logErrors);
+app.use(helpers.sendErrorToClient);
+// ... add other stuff to express
+app.listen(port, hostname);
 ```
 
 This will ensure that all errors are logged on the server but none are leaked to the client.
 With the `logErrors` and `sendErrorToClient` middlewares enabled, your route handling code just needs to call `next` on an error:
 
 ```javascript
-  helpers.awaitHandlerFactory(async (req, res, next) => {
-    try {
-      const result = await someAsyncProcess();
-      if(result.success){
-        //do awesome things
-      }
-    } catch(err){
-      next(err);  //will log the error on the server (console) and then call `sendErrorToClient` with the error;
+helpers.awaitHandlerFactory(async (req, res, next) => {
+  try {
+    const result = await someAsyncProcess();
+    if (result.success) {
+      //do awesome things
     }
-  });  
+  } catch (err) {
+    next(err); //will log the error on the server (console) and then call `sendErrorToClient` with the error;
+  }
+});
 ```
 
 - `sendInvalidApiCall`
@@ -198,10 +229,10 @@ This function is a small express middleware that will send a 400 error to the ca
 This function allows you to use async/await syntax within handler functions.
 
 ```javascript
-  helpers.awaitHandlerFactory(async (req, res, next) => {
-    const result = await someAsyncProcess();
-    if(result.success){
-      //do awesome things
-    }
-  });
+helpers.awaitHandlerFactory(async (req, res, next) => {
+  const result = await someAsyncProcess();
+  if (result.success) {
+    //do awesome things
+  }
+});
 ```
