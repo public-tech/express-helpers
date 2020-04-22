@@ -110,7 +110,7 @@ describe('Routes route addition tests', function() {
       routes.addGetRoutes();
     }
     expect(addGetRoutes).to.not.throw();
-    expect(app._router.stack.length).to.equal(4); //there are 2 default express routes and our 2 get routes
+    expect(app._router.stack.length).to.equal(5); //there are 2 default express routes and our 3 get routes
   });
 
   it('adds post routes without error', function() {
@@ -118,7 +118,7 @@ describe('Routes route addition tests', function() {
       routes.addPostRoutes();
     }
     expect(addPostRoutes).to.not.throw();
-    expect(app._router.stack.length).to.equal(5); //there are 2 default express routes and our 2 get routes and 1 post
+    expect(app._router.stack.length).to.equal(7); //there are 2 default express routes and our 3 get routes and 2 post routes
   });
 
   it('adds all routes without error', function() {
@@ -126,7 +126,7 @@ describe('Routes route addition tests', function() {
       routes.addAllRoutes();
     }
     expect(addAllRoutes).to.not.throw();
-    expect(app._router.stack.length).to.equal(9); //express allows duplicate handlers
+    expect(app._router.stack.length).to.equal(13); //7 existing routes + 6 in all routes (3 get, 2 post and 1 put)
   });
 
   it('adds 400 wildcard handlers without error', function() {
@@ -134,7 +134,7 @@ describe('Routes route addition tests', function() {
       routes.add400Handlers();
     }
     expect(add400Handlers).to.not.throw();
-    expect(app._router.stack.length).to.equal(13); //there are 4 verbs so we should add 4 handlers
+    expect(app._router.stack.length).to.equal(17); //there are 4 verbs so we should add 4 handlers
   });
 
   describe('Direct route addition', function() {
